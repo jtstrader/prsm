@@ -1,7 +1,12 @@
 [package]
 name = "prsm"
+author = ["Jacob Strader <jacob.thomas.strader@gmail.com>"]
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/jtstrader/prsm"
+license = "MIT"
+keywords = ["scripting", "automation", "cli"]
+categories = ["development-tools", "development-tools::scripting", "development-tools::automation"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
