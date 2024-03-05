@@ -201,6 +201,18 @@ impl<'a> Script<'a> {
 /// };
 ///
 /// script_manager.run();
+///
+/// /* This generates ->
+///  *
+///  * ========== ScriptManager ==========
+///  * 1. Format repository files
+///  * 2. Lint Rust files
+///  * 3. Test never fail
+///  * ===================================
+///  *
+///  * Enter script ID: ...
+///  */
+///
 /// ```  
 pub struct ScriptManager<'a> {
     /// The name of the script manager that's displayed when [`run`](ScriptManager::run) is called.
