@@ -1,7 +1,7 @@
 #![deny(unsafe_code)]
 
 //! ## PRSM - Project Script Manager
-//! `prsm` (pronounced "prism") aims to speed up the process of writing simple, project management
+//! `prsm` (pronounced "prism") aims to speed up the process of writing simple project management
 //! CLI applications. It's common to have a custom suite of formatting, linting, and debugging
 //! scripts in separate shell/scripting files. However, for those interested in using Rust for
 //! these purposes, it can be daunting to set up their scripts compared to others who use simpler
@@ -245,7 +245,7 @@ impl<'a> ScriptManager<'a> {
 /// `()`), the function will not actually execute until the script's [`run`](Script::run) function
 /// is called.
 ///
-/// The primary focus of `prsm` is to simply the setup of the script manager. It assumes that each script,
+/// The primary focus of `prsm` is to simplify the setup of the script manager. It assumes that each script,
 /// function, suite, etc. that it runs will have a high-level entry point that does not need to return
 /// any value other than an error. For the sake of simplicty and ease of use, this macro *will accept*
 /// functions that return results with non-unit `Ok` values. However, these values will be immediately
