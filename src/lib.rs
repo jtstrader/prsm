@@ -48,7 +48,8 @@ pub mod prelude {
 pub trait PrsmDisplay: Display + Debug {}
 impl<T> PrsmDisplay for T where T: Display + Debug {}
 
-/// The required return type for `prsm` functions.
+/// The required return type for `prsm` functions. If you wish to explicitly declare your return type
+/// as one that does not fail, please use [`Infallible`](::std::convert::Infallible).
 pub type ScriptResult = Result<(), Box<dyn PrsmDisplay>>;
 
 /// A `prsm` script that can be called through the [`ScriptManager`].
@@ -124,7 +125,9 @@ impl<'a> Script<'a> {
 
 /// A named script manager (defaults to "ScriptManager"). When ran, the manager displays a mapping
 /// of functions that can be called to perform tasks. The scripts can be given descriptions that
-/// will display in the run menu along with their option ID.
+/// will display in the run menu along with their option ID. If you wish to include a script that
+/// has no error condition, rather than void the usage of the `Result` type, please use
+/// [`Infallible`](::std::convert::Infallible).
 ///
 /// Although you can manually create a [`ScriptManager`] instance using [`ScriptManager::new`],
 /// consider using the [`prsm`] macro instead.
@@ -134,14 +137,17 @@ impl<'a> Script<'a> {
 /// **Using [`prsm`] (recommended)**
 ///
 /// ```rust
+/// use std::convert::Infallible;
 /// use prsm::{prsm, ScriptManager};
 ///
 /// fn format() -> Result<(), std::io::Error> { Ok(()) }
 /// fn lint() -> Result<(), std::io::Error> { Ok(()) }
+/// fn never_fail() -> Result<(), Infallible> { Ok(()) }
 ///
 /// let default_sm: ScriptManager = prsm! {
 ///     [1] "Format repository files" => format(),
-///     [2] "Lint Rust files" => lint()
+///     [2] "Lint Rust files" => lint(),
+///     [3] "Test never fail" => never_fail()
 /// };
 ///
 /// let named_sm: ScriptManager = prsm! {
@@ -174,6 +180,28 @@ impl<'a> Script<'a> {
 ///
 /// assert_eq!(manual_sm.name, "ManualManager");
 /// ```
+///
+/// # Running the [`ScriptManager`]
+/// You can run the [`ScriptManager`] by calling the [`run`](ScriptManager::run) function. This will
+/// generate an interactive menu that accepts user input to run a script that is loaded into the
+/// manager.
+///
+/// ```rust,no_run
+/// use std::convert::Infallible;
+/// use prsm::prsm;
+///
+/// fn format() -> Result<(), std::io::Error> { Ok(()) }
+/// fn lint() -> Result<(), std::io::Error> { Ok(()) }
+/// fn never_fail() -> Result<(), Infallible> { Ok(()) }
+///
+/// let script_manager = prsm! {
+///     [1] "Format repository files" => format(),
+///     [2] "Lint Rust files" => lint(),
+///     [3] "Test never fail" => never_fail()
+/// };
+///
+/// script_manager.run();
+/// ```  
 pub struct ScriptManager<'a> {
     /// The name of the script manager that's displayed when [`run`](ScriptManager::run) is called.
     pub name: &'a str,
@@ -320,14 +348,17 @@ macro_rules! prsm_script {
 ///
 /// # Examples
 /// ```rust
+/// use std::convert::Infallible;
 /// use prsm::{prsm, ScriptManager};
 ///
 /// fn format() -> Result<(), std::io::Error> { Ok(()) }
 /// fn lint() -> Result<(), std::io::Error> { Ok(()) }
+/// fn never_fail() -> Result<(), Infallible> { Ok(()) }
 ///
 /// let default_sm: ScriptManager = prsm! {
 ///     [1] "Format repository files" => format(),
-///     [2] "Lint Rust files" => lint()
+///     [2] "Lint Rust files" => lint(),
+///     [3] "Test never fail" => never_fail()
 /// };
 ///
 /// let named_sm: ScriptManager = prsm! {
@@ -376,6 +407,8 @@ macro_rules! prsm {
 
 #[cfg(test)]
 mod tests {
+    use std::convert::Infallible;
+
     use super::*;
 
     #[test]
@@ -532,5 +565,17 @@ mod tests {
 
         assert_eq!(script.description, "test script");
         assert_eq!(format!("{}", err), "reflect back");
+    }
+
+    #[test]
+    fn prsm_infallible_return() {
+        fn cannot_fail() -> Result<(), Infallible> {
+            Ok(())
+        }
+
+        let script = prsm_script!("infallibe", cannot_fail());
+        let ok = script.run().unwrap();
+
+        assert!(matches!(ok, ()));
     }
 }
