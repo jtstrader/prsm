@@ -6,7 +6,7 @@ on:
 
 name: Clippy Check
 jobs:
-  extel:
+  prsm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
