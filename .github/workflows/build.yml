@@ -1,0 +1,25 @@
+on:
+  push:
+    paths:
+      - "**.rs"
+      - ".github/workflows/**"
+
+name: Build Prsm
+jobs:
+  build_prsm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+
+      - name: Build prsm
+        run: cargo build --release --all-features
+
+      - name: Test prsm
+        run: cargo test
