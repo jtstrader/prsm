@@ -1,0 +1,23 @@
+on:
+  push:
+    paths:
+      - "./**/.rs"
+      - ".github/workflows/**"
+
+name: Clippy Check
+jobs:
+  extel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          components: clippy
+
+      - name: Check prsm
+        run: cargo clippy --all-features -- -Dwarnings
